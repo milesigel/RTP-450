@@ -1,7 +1,7 @@
 ///////////////////////////////////////
 // COMP/ELEC/MECH 450/550
 // Project 3
-// Authors: Miles Sigel, Alex Prucka, Connor Kelley
+// Authors: Miles Sigel, Alex Prucka
 //////////////////////////////////////
 
 #include "RTP.h"
@@ -26,13 +26,13 @@ void ompl::geometric::RTP::clear() {
 	Planner::clear();
 	sampler_.reset();
 	freeMemory();
-	allMotions.clear(); /// Clear our vector that holds the motions of our tree
+	motionTree.clear(); /// Clear our vector that holds the motions of our tree
 	lastGoalMotion_ = nullptr;
 }
 
 void ompl::geometric::RTP::freeMemory()
 {
-	allMotions.clear();
+	motionTree.clear();
 }
 
 void ompl::geometric::RTP::setup()
@@ -52,10 +52,10 @@ ompl::base::PlannerStatus ompl::geometric::RTP::solve(const ompl::base::PlannerT
 	{
 		auto *motion = new Motion(si_); // initalize new motion pointer, passing the state information, si
 		si_->copyState(motion->state, st); // copy the state into the _si
-		allMotions.push_back(motion); // add motion to the queue
+		motionTree.push_back(motion); // add motion to the queue
 	}
 
-	if (allMotions.size() == 0) // If our tree is empty, that means we couldn't initialize any start states
+	if (motionTree.size() == 0) // If our tree is empty, that means we couldn't initialize any start states
 	{
 		OMPL_ERROR("%s: There are no valid initial states!", getName().c_str());
 		return ompl::base::PlannerStatus::INVALID_START;
@@ -66,7 +66,7 @@ ompl::base::PlannerStatus ompl::geometric::RTP::solve(const ompl::base::PlannerT
 		sampler_ = si_->allocStateSampler();
     }
 
-	OMPL_INFORM("%s: Starting planning with %u states already in datastructure", getName().c_str(), allMotions.size());
+	OMPL_INFORM("%s: Starting planning with %u states already in datastructure", getName().c_str(), motionTree.size());
 	// Initialize both approximate and exact solution pointers
 	Motion *solution = nullptr; 
 	Motion *approxsol = nullptr;
@@ -85,8 +85,8 @@ ompl::base::PlannerStatus ompl::geometric::RTP::solve(const ompl::base::PlannerT
 
 		/* Choose a random state from the tree */
         // std:rand() generates random number between 0 and max_rand
-		auto rIndex = std::rand() % allMotions.size();
-		Motion *newMotion = allMotions.at(rIndex); // gets random motion point
+		auto rIndex = std::rand() % motionTree.size();
+		Motion *newMotion = motionTree.at(rIndex); // gets random motion point
 
 		if (si_->checkMotion(newMotion->state, rstate)) // compare the two states
 		{
@@ -95,7 +95,7 @@ ompl::base::PlannerStatus ompl::geometric::RTP::solve(const ompl::base::PlannerT
             auto *motion = new Motion(si_);
             si_->copyState(motion->state, rstate); // copy the random state in the new motion object
             motion->parent = newMotion; // set the parent to the new motion
-            allMotions.push_back(motion); // add the motion back to the tree
+            motionTree.push_back(motion); // add the motion back to the tree
 
             newMotion = motion;
 
@@ -149,7 +149,7 @@ ompl::base::PlannerStatus ompl::geometric::RTP::solve(const ompl::base::PlannerT
 		si_->freeState(rmotion->state);
 	delete rmotion;
 
-	OMPL_INFORM("%s: Created %u states", getName().c_str(), allMotions.size());
+	OMPL_INFORM("%s: Created %u states", getName().c_str(), motionTree.size());
 
 	return {solved, approximate};
 }
@@ -162,7 +162,7 @@ void ompl::geometric::RTP::getPlannerData(ompl::base::PlannerData &data) const
 	if (lastGoalMotion_ != nullptr)
 		data.addGoalVertex(ompl::base::PlannerDataVertex(lastGoalMotion_->state));
 
-	for (auto &motion : allMotions)
+	for (auto &motion : motionTree)
 	{
 		if (motion->parent == nullptr)
 			data.addStartVertex(ompl::base::PlannerDataVertex(motion->state));

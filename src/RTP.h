@@ -1,7 +1,7 @@
 ///////////////////////////////////////
 // COMP/ELEC/MECH 450/550
 // Project 3
-// Authors: Miles Sigel, Alex Prucka, Connor Kelly
+// Authors: Miles Sigel, Alex Prucka
 //////////////////////////////////////
 
 // majority of this code taken from RRT.h in the ompl github dir
@@ -97,8 +97,8 @@ namespace ompl
 			/** \brief State sampler */
 			base::StateSamplerPtr sampler_;
 
-			/** \brief A simple vector-based datastructure containing the tree of motions */
-			std::vector<Motion *> allMotions; // Holds pointers to motions 
+			/** \brief tree of motions */
+			std::vector<Motion *> motionTree; // Holds pointers to motions 
 
 			/** \brief The fraction of time the goal is picked as the state to expand towards (if such a state is
 			 * available) */
