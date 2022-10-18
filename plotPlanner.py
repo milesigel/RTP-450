@@ -1,4 +1,4 @@
-# Created by Miles Sigel and Alex Prucka COMP
+# Created by Miles Sigel and Alex Prucka COMP 450
 
 from mpl_toolkits.mplot3d import Axes3D, art3d
 from distutils.command.config import config
@@ -77,13 +77,12 @@ def plotBox(path, enviornment):
     else:
         plotEnv2Obstacles(ax)
 
-
-    # Plotting the path (reference point)
+    # extract x and y 
     X = [p[0] for p in path]
     Y = [p[1] for p in path]
     ax.plot(X, Y)
 
-    # Plotting the actual box
+    # this is the box sizes
     boxVert = [[-0.25, -0.25], [0.25, -0.25], [0.25, 0.25], [-0.25, 0.25], [-0.25, -0.25]]
 
     for p in path:
@@ -97,17 +96,15 @@ def plotBox(path, enviornment):
     plt.axis([-3,3,-3,3])
     plt.show()
 
-
-# Read the cspace definition and the path from filename
 def readPath(filename):
-    lines = [line.rstrip() for line in open(filename) if len(line.rstrip()) > 0]
+    linesFromFile = [line.rstrip() for line in open(filename) if len(line.rstrip()) > 0]
 
-    if len(lines) == 0:
+    if len(linesFromFile) == 0:
         print("the file passed does not contain valid planning")
         sys.exit(1)
 
-    configuration_space = "point" if len(lines[0].split(' ')) == 2 else "box"
-    point_data = [[float(x) for x in line.split(' ')] for line in lines]
+    configuration_space = "point" if len(linesFromFile[0].split(' ')) == 2 else "box"
+    point_data = [[float(x) for x in line.split(' ')] for line in linesFromFile]
 
     return configuration_space, point_data
 
@@ -121,6 +118,7 @@ if __name__ == '__main__':
         print("The second arguement should be which enviornment the planner was used on (1 or 2)")
         sys.exit(1)
 
+    # way of just printing the env 
     if filename == "env":
         plotEnvs(enviornment)
         sys.exit(0)

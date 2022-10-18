@@ -9,25 +9,14 @@
 #include <cmath>
 #include <functional>
 #include <memory>
-
-// The collision checker produced in project 2
 #include "CollisionChecking.h"
-
-// Your random tree planner
 #include "RTP.h"
-
-// Including SimpleSetup will pull in MOST of what you need to plan
 #include <ompl/geometric/SimpleSetup.h>
-
-// Except for the state space definitions...
 #include <ompl/base/spaces/RealVectorStateSpace.h>
 #include <ompl/base/spaces/SO2StateSpace.h>
 
 
-// Use placeholder namespace for arguments to bound functions.
 using namespace std::placeholders;
-
-
 void planPoint(const std::vector<Rectangle> &obstacles, int choice)
 {
 	
@@ -206,7 +195,6 @@ int main(int /* argc */, char ** /* argv */)
 		std::cout << "Plan for: " << std::endl;
 		std::cout << " (1) A point in 2D" << std::endl;
 		std::cout << " (2) A rigid box in 2D" << std::endl;
-
 		std::cin >> robot;
 	} while (robot < 1 || robot > 2);
 
@@ -215,7 +203,6 @@ int main(int /* argc */, char ** /* argv */)
 		std::cout << "In Environment: " << std::endl;
 		std::cout << " (1) Two rectangles" << std::endl;
 		std::cout << " (2) Four rectangles" << std::endl;
-
 		std::cin >> choice;
 	} while (choice < 1 || choice > 2);
 
@@ -247,6 +234,5 @@ int main(int /* argc */, char ** /* argv */)
 			std::cerr << "Invalid Robot Type!" << std::endl;
 			break;
 	}
-
 	return 0;
 }
