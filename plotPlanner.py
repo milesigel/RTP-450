@@ -1,10 +1,11 @@
-#!/usr/bin/env python
-from distutils.command.config import config
+# Created by Miles Sigel and Alex Prucka COMP
+
 from mpl_toolkits.mplot3d import Axes3D, art3d
-import matplotlib.pyplot as plt
+from distutils.command.config import config
 import matplotlib.patches as patches
-import sys
+import matplotlib.pyplot as plt
 from math import sin, cos
+import sys
 
 # plots the first env obstacles
 def plotEnv1Obstacles(ax):
