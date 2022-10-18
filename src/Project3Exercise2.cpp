@@ -28,7 +28,7 @@
 using namespace std::placeholders;
 
 
-void planPoint(const std::vector<Rectangle> &obstacles )
+void planPoint(const std::vector<Rectangle> &obstacles, int choice)
 {
 	
 	auto r2 = std::make_shared<ompl::base::RealVectorStateSpace>(2);
@@ -41,12 +41,19 @@ void planPoint(const std::vector<Rectangle> &obstacles )
 	ss.setStateValidityChecker(std::bind(isValidStatePoint, _1, obstacles));
 
 	ompl::base::ScopedState<> start(r2);
+	ompl::base::ScopedState<> goal(r2);
+
 	start[0] = -2;
 	start[1] = -2;
 
-	ompl::base::ScopedState<> goal(r2);
-	goal[0] = 2;
-	goal[1] = 2;
+	if (choice == 1) {
+		goal[0] = 2;
+		goal[1] = 2;
+	} else {
+		goal[0] = -2;
+		goal[1] = 2;
+	}
+
 
 	ss.setStartAndGoalStates(start, goal);
 
@@ -75,7 +82,7 @@ void planPoint(const std::vector<Rectangle> &obstacles )
 
 }
 
-void planBox(const std::vector<Rectangle> &  obstacles )
+void planBox(const std::vector<Rectangle> &  obstacles, int choice)
 {
 
 
@@ -102,9 +109,15 @@ void planBox(const std::vector<Rectangle> &  obstacles )
 	start[2] = 0.4;
 
 	ompl::base::ScopedState<> goal(se2);
-	goal[0] = 2;
-	goal[1] = 2;
 	goal[2] = 0.8;
+
+	if (choice == 1) {
+		goal[0] = 2;
+		goal[1] = 2;
+	} else {
+		goal[0] = -2;
+		goal[1] = 2;
+	}
 
 	
 	ss.setStartAndGoalStates(start, goal);
@@ -134,7 +147,7 @@ void planBox(const std::vector<Rectangle> &  obstacles )
 		std::cout << "No solution found" << std::endl;
 }
 
-void makeEnvironment1(std::vector<Rectangle> &obstacles )
+void makeEnvironment1(std::vector<Rectangle> &obstacles)
 {
 	Rectangle ob1;
 	ob1.x = -1.5;
@@ -152,7 +165,7 @@ void makeEnvironment1(std::vector<Rectangle> &obstacles )
 
 }
 
-void makeEnvironment2(std::vector<Rectangle> &obstacles )
+void makeEnvironment2(std::vector<Rectangle> &obstacles)
 {
 	Rectangle ob1;
 	ob1.x = -3;
@@ -225,10 +238,10 @@ int main(int /* argc */, char ** /* argv */)
 	{
 		case 1:
 			std::cout<<"num obstacles before plan "<<obstacles.size()<<std::endl;
-			planPoint(obstacles);
+			planPoint(obstacles, choice);
 			break;
 		case 2:
-			planBox(obstacles);
+			planBox(obstacles, choice);
 			break;
 		default:
 			std::cerr << "Invalid Robot Type!" << std::endl;

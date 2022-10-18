@@ -7,6 +7,19 @@ import matplotlib.pyplot as plt
 from math import sin, cos
 import sys
 
+def plotEnvs(envNum):
+    fig = plt.figure()
+    ax = fig.gca()
+
+    if (envNum == 1):
+        plotEnv1Obstacles(ax)
+    else:
+        plotEnv2Obstacles(ax)
+
+    plt.axis([-3,3,-3,3])
+    plt.show()
+
+
 # plots the first env obstacles
 def plotEnv1Obstacles(ax):
     # Drawing the unit square
@@ -51,6 +64,7 @@ def plotPoint(path, enviornment):
     Y = [p[1] for p in path]
     ax.plot(X, Y)
 
+    plt.axis([-3,3,-3,3])
     plt.show()
 
 # plots a box env
@@ -80,7 +94,7 @@ def plotBox(path, enviornment):
             y.append(v[0] * sin(p[2]) + v[1] * cos(p[2]) + p[1])
         ax.plot(x, y, 'k')
 
-    plt.axis([-4,4,-4,4])
+    plt.axis([-3,3,-3,3])
     plt.show()
 
 
@@ -107,6 +121,10 @@ if __name__ == '__main__':
         print("The second arguement should be which enviornment the planner was used on (1 or 2)")
         sys.exit(1)
 
+    if filename == "env":
+        plotEnvs(enviornment)
+        sys.exit(0)
+    
     configuration_space, data = readPath(filename)
 
     if configuration_space == "point":
