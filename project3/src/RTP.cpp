@@ -1,9 +1,0 @@
-///////////////////////////////////////
-// COMP/ELEC/MECH 450/550
-// Project 3
-// Authors: FILL ME OUT!!
-//////////////////////////////////////
-
-#include "RTP.h"
-
-// TODO: Implement RTP as described
