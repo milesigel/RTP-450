@@ -24,43 +24,44 @@ using namespace std::placeholders;
 
 void planPoint(const std::vector<Rectangle> &obstacles )
 {
-	std::cout<<"Num obstacles inside plan "<<obstacles.size()<<std::endl;
+	
 	auto r2 = std::make_shared<ompl::base::RealVectorStateSpace>(2);
 	ompl::base::RealVectorBounds bounds(2);
-	bounds.setLow(-2);  // x and y have a minimum of -2
-	bounds.setHigh(2);  // x and y have a maximum of 2
-	// Set the bounds on R2
+	bounds.setLow(-3); 
+	bounds.setHigh(3); 
 	r2->setBounds(bounds);
 
 	ompl::geometric::SimpleSetup ss(r2);
 	ss.setStateValidityChecker(std::bind(isValidStatePoint, _1, obstacles));
 
 	ompl::base::ScopedState<> start(r2);
-	start[0] = -0.9;
-	start[1] = -0.9;
+	start[0] = -2;
+	start[1] = -2;
 
 	ompl::base::ScopedState<> goal(r2);
-	goal[0] = 0.9;
-	goal[1] = 0.9;
+	goal[0] = 2;
+	goal[1] = 2;
 
 	ss.setStartAndGoalStates(start, goal);
 
 	auto planner = std::make_shared<ompl::geometric::RTP>(ss.getSpaceInformation());
 	ss.setPlanner(planner);
 
-	ompl::base::PlannerStatus solved = ss.solve(10.0);
+	ompl::base::PlannerStatus solved = ss.solve(30);
 
 	if (solved)
 	{
-		// print the path to screen
-		std::cout << "Found solution:" << std::endl;
+		// print to terminal
+		std::cout << "Solution found:" << std::endl;
 		ompl::geometric::PathGeometric &path = ss.getSolutionPath();
+
 		path.interpolate(50);
 		path.printAsMatrix(std::cout);
 
-		// print path to file
-		std::ofstream fout("path.txt");
+		// print to file
+		std::ofstream fout("pathpoint.txt");
 		fout << "R2" << std::endl;
+
 		path.printAsMatrix(fout);
 		fout.close();
 	}
@@ -77,8 +78,8 @@ void planBox(const std::vector<Rectangle> &  obstacles )
 	auto r2 = std::make_shared<ompl::base::RealVectorStateSpace>(2);
 
 	ompl::base::RealVectorBounds bounds(2);
-	bounds.setLow(-2);  // x and y have a minimum of -2
-	bounds.setHigh(2);  // x and y have a maximum of 2
+	bounds.setLow(-3);
+	bounds.setHigh(3);
 
 	r2->setBounds(bounds);
 
@@ -88,38 +89,40 @@ void planBox(const std::vector<Rectangle> &  obstacles )
 
 	ompl::geometric::SimpleSetup ss(se2);
 
-	ss.setStateValidityChecker(std::bind(isValidStateSquare, _1, 0.3, obstacles));
+	ss.setStateValidityChecker(std::bind(isValidStateSquare, _1, 0.5, obstacles));
 
 	ompl::base::ScopedState<> start(se2);
-	start[0] = -0.9;
-	start[1] = -0.9;
-	start[2] = 0.0;
+	start[0] = -2;
+	start[1] = -2;
+	start[2] = 0.4;
 
 	ompl::base::ScopedState<> goal(se2);
-	goal[0] = 0.9;
-	goal[1] = 0.9;
-	goal[2] = 0.0;
+	goal[0] = 2;
+	goal[1] = 2;
+	goal[2] = 0.8;
 
-	// set the start and goal states
+	
 	ss.setStartAndGoalStates(start, goal);
 
 	auto planner = std::make_shared<ompl::geometric::RTP>(ss.getSpaceInformation());
 	ss.setPlanner(planner);
 
-	// Step 6) Attempt to solve the problem within the given time (seconds)
+	
 	ompl::base::PlannerStatus solved = ss.solve(10.0);
 
 	if (solved)
 	{
-		// print the path to screen
-		std::cout << "Found solution:" << std::endl;
+		// print to terminal
+		std::cout << "Solution found:" << std::endl;
 		ompl::geometric::PathGeometric &path = ss.getSolutionPath();
+
 		path.interpolate(50);
 		path.printAsMatrix(std::cout);
 
-		// print path to file
-		std::ofstream fout("path.txt");
+		// print to file
+		std::ofstream fout("pathbox.txt");
 		fout << "SE2" << std::endl;
+
 		path.printAsMatrix(fout);
 		fout.close();
 	}
@@ -129,40 +132,51 @@ void planBox(const std::vector<Rectangle> &  obstacles )
 
 void makeEnvironment1(std::vector<Rectangle> &obstacles )
 {
-	Rectangle obstacle1;
-	obstacle1.x = -0.5;
-	obstacle1.y = -2;
-	obstacle1.width = 0.1;
-	obstacle1.height = 3.6;
-	obstacles.push_back(obstacle1);
+	Rectangle ob1;
+	ob1.x = -1.5;
+	ob1.y = -3;
+	ob1.width = 0.2;
+	ob1.height = 3.6;
+	obstacles.push_back(ob1);
 
-	Rectangle obstacle2;
-	obstacle2.x = 0.5;
-	obstacle2.y = -1.6;
-	obstacle2.width = 0.1;
-	obstacle2.height = 3.6;
-	obstacles.push_back(obstacle2);
+	Rectangle ob2;
+	ob2.x = 1.5;
+	ob2.y = -2.5;
+	ob2.width = 3.6;
+	ob2.height = 0.2;
+	obstacles.push_back(ob2);
 
-	std::cout<<"After making environment "<<obstacles.size()<<std::endl;
 }
 
 void makeEnvironment2(std::vector<Rectangle> &obstacles )
 {
-	float side = 0.9;
-	float space_factor = 1.4;
-	float offset = -2;
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			if( !(i==0 && j==0) and !(i==2 && j==2) ){
-				Rectangle obstacle;
-				obstacle.x = space_factor * i + offset;
-				obstacle.y = space_factor * j + offset;
-				obstacle.width = side;
-				obstacle.height = side;
-				obstacles.push_back(obstacle);
-			}
-		}		
-	}
+	Rectangle ob1;
+	ob1.x = -3;
+	ob1.y = -1.5;
+	ob1.width = 3;
+	ob1.height = 0.1;
+	obstacles.push_back(ob1);
+
+	Rectangle ob2;
+	ob2.x = 0;
+	ob2.y = -2;
+	ob2.width = 0.1;
+	ob2.height = 1;
+	obstacles.push_back(ob2);
+
+	Rectangle ob3;
+	ob3.x = 0;
+	ob3.y = 1.5;
+	ob3.width = 0.1;
+	ob3.height = 3;
+	obstacles.push_back(ob3);
+
+	Rectangle ob4;
+	ob4.x = 0;
+	ob4.y = 1;
+	ob4.width = 0.1;
+	ob4.height = 1;
+	obstacles.push_back(ob4);
 }
 
 int main(int /* argc */, char ** /* argv */)
@@ -182,8 +196,8 @@ int main(int /* argc */, char ** /* argv */)
 	do
 	{
 		std::cout << "In Environment: " << std::endl;
-		std::cout << " (1) Two Vertical Bars" << std::endl;
-		std::cout << " (2) Seven Squares Grid" << std::endl;
+		std::cout << " (1) Two rectangles" << std::endl;
+		std::cout << " (2) Four rectangles" << std::endl;
 
 		std::cin >> choice;
 	} while (choice < 1 || choice > 2);
@@ -199,7 +213,7 @@ int main(int /* argc */, char ** /* argv */)
 			makeEnvironment2(obstacles);
 			break;
 		default:
-			std::cerr << "Invalid Environment Number!" << std::endl;
+			std::cerr << "environment num error" << std::endl;
 			break;
 	}
 
