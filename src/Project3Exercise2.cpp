@@ -66,7 +66,6 @@ void planPoint(const std::vector<Rectangle> &obstacles )
 
 		// print to file
 		std::ofstream fout("pathpoint.txt");
-		fout << "R2" << std::endl;
 
 		path.printAsMatrix(fout);
 		fout.close();
@@ -127,7 +126,6 @@ void planBox(const std::vector<Rectangle> &  obstacles )
 
 		// print to file
 		std::ofstream fout("pathbox.txt");
-		fout << "SE2" << std::endl;
 
 		path.printAsMatrix(fout);
 		fout.close();
